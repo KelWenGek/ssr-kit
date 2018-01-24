@@ -11,18 +11,21 @@ module.exports = {
     srcDir: resolve(__dirname, 'src'),
     buildDir: resolve(__dirname, 'dist'),
     rootDir: resolve(__dirname),
+
     appTemplatePath: resolve(__dirname, 'src/index.html'),
     build: {
         filename: {
-            app: '[name]:[hash:5].js',
-            chunk: '[name]:[chunkHash:5].js',
-            manifest: '[name]:[contentHash:5].js'
+            app: '[name].js',
+            chunk: '[name].js',
+            manifest: '[name].js'
         },
         publicPath: '/',
         devMiddleware: {},
-        hotMiddleware: {}
+        hotMiddleware: {},
+        ssr: true
     },
     watchers: {
         webpack: {}
-    }
+    },
+    plugins: []
 }

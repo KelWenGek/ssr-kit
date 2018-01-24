@@ -7,11 +7,14 @@ const fresh = require('fresh');
 const fs = require('fs-extra');
 const pify = require('pify');
 const portfinder = require('portfinder');
+const MFS = require('memory-fs');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const { createBundleRenderer } = require('vue-server-renderer');
 const { sequence, waitFor } = require('./utils');
+const webpackClientConfig = require('./webpack.client.conf');
+const webpackServerConfig = require('./webpack.server.conf');
 
 class WebpackDevSSR {
     constructor(options) {
@@ -45,8 +48,8 @@ class WebpackDevSSR {
     }
     async ready() {
         await this.build();
-        this.setUpMiddlewares();
-        this.listen();
+        await this.setUpMiddlewares();
+        await this.listen();
     }
     listen() {
         portfinder.getPortPromise().then(port => {
@@ -76,7 +79,7 @@ class WebpackDevSSR {
         return Boolean(this.resources.ssrTemplate && this.resources.serverBundle);
     }
     async build() {
-        if (this._buildStatus === STATUS.BUILD_DONE && this.options.dev) {
+        if (this._buildStatus === STATUS.BUILD_DONE && !this.options.dev) {
             return this;
         }
         if (this._buildStatus === STATUS.BUILDING) {
@@ -89,31 +92,62 @@ class WebpackDevSSR {
         return this;
     }
     setUpMiddlewares() {
+
+        this.app.use(serveStatic(resolve(this.options.buildDir), {
+            index: false, // Don't serve index.html template
+            maxAge: '1y' // 1 year in production
+        }));
+
         //Dev build,file provided by webpack-dev-middleware
         if (this.options.dev) {
             this.app.use(async (ctx, next) => {
                 let req = ctx.req, res = ctx.res;
-                await this.webpackDevMiddleware(req, res);
-                await this.webpackHotMiddleware(req, res);
-                await next();
-            })
+                if (this.webpackDevMiddleware) {
+                    await this.webpackDevMiddleware(req, res);
+                }
+                if (this.webpackHotMiddleware) {
+                    await this.webpackHotMiddleware(req, res);
+                }
+                next();
+            });
+
         } else {
             //Production build
-            this.app.use(serveStatic(resolve(this.options.buildDir)));
-            this.app.use(serveStatic(resolve(this.options.srcDir, 'static')))
         }
+        // this.app.use(serveStatic(resolve(this.options.srcDir, 'static')))
         this.app.use(async (ctx, next) => {
-            let result = await this.renderRoute(ctx);
-            console.log(result);
+            await this.renderRoute(ctx, next);
         });
 
     }
-    async renderRoute(ctx) {
+    async renderRoute(ctx, next) {
         if (!this.isReady) {
             await waitFor(1000);
-            return this.renderRoute(ctx);
+            return this.renderRoute(ctx, next);
         }
-        await this.bundleRenderer.renderToString(ctx);
+        // ctx.status = 200;
+        try {
+            await this.bundleRenderer.renderToString(ctx, (err, html) => {
+                if (err) {
+                    ctx.status = 500;
+                    return next(err);
+                } else {
+                    let etag = generateEtag(html);
+                    if (fresh(ctx.headers, { etag })) {
+                        return ctx.status = 304;
+                    }
+                    ctx.set('ETag', etag);
+                }
+                ctx.set('Content-type', 'text/html;charset=utf-8');
+                ctx.set('Content-length', Buffer.byteLength(html));
+                console.log('html: ', html)
+                ctx.body = html;
+                return html;
+            });
+        } catch (err) {
+            console.error(err);
+            return err;
+        }
     }
     async webpackBuild() {
         const compilerOptions = [];
@@ -201,7 +235,7 @@ class WebpackDevSSR {
         resourceMap.forEach(({ key, fileName, transform }) => {
             const rawKey = '$$' + key;
             let path = join(distPath, fileName);
-            const rawData, data;
+            let rawData, data;
             if (!_fs.existsSync(path)) {
                 //Resource not exist
                 return;
@@ -237,9 +271,11 @@ class WebpackDevSSR {
         // Create bundle renderer for SSR
         this.bundleRenderer = createBundleRenderer(this.resources.serverBundle,
             Object.assign({
+                template: this.resources.ssrTemplate,
                 clientManifest: this.resources.clientManifest,
+                inject: true,
                 runInNewContext: false,
-                basedir: this.options.rootDir
+                // basedir: this.options.rootDir
             }, this.options.render.bundleRenderer)
         );
     }
@@ -253,7 +289,7 @@ const STATUS = {
 const parseTemplate = templateStr => _.template(templateStr, {
     interpolate: /{{([\s\S]+?)}}/g
 })
-
+const identify = _ => _;
 const resourceMap = [
     {
         key: 'clientManifest',
@@ -268,12 +304,12 @@ const resourceMap = [
     {
         key: 'ssrTemplate',
         fileName: 'index.ssr.html',
-        transform: parseTemplate
+        transform: identify
     },
     {
         key: 'spaTemplate',
         fileName: 'index.spa.html',
-        transform: parseTemplate
+        transform: identify
     }
 ]
 

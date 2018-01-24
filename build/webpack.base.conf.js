@@ -39,7 +39,8 @@ module.exports = function webpackBaseConfig(name) {
                 '@': resolve(this.options.srcDir)
             },
             extensions: ['.js', '.json', '.vue', '.ts']
-        }
+        },
+        plugins: this.options.plugins || []
     };
     return cloneDeep(config);
 }

@@ -9,6 +9,11 @@ export function createRouter() {
                 name: 'home',
                 path: '/',
                 component: () => import('./components/Home')
+            },
+            {
+                name: 'foo',
+                path: '/foo',
+                component: () => import('./components/Foo')
             }
         ]
     });

@@ -4,7 +4,8 @@
   "description": "a kit for webpack config  setup of vue-ssr",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node ./service.js",
+    "build": "NODE_ENV=production node ./service.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "koa-static": "^4.0.2",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
+    "memory-fs": "^0.4.1",
     "node-sass": "^4.7.2",
     "pify": "^3.0.0",
     "portfinder": "^1.0.13",
