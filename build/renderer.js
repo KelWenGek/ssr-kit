@@ -276,3 +276,5 @@ const resourceMap = [
         transform: parseTemplate
     }
 ]
+
+module.exports = WebpackDevSSR;
