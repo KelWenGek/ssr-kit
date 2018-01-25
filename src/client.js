@@ -24,3 +24,4 @@ router.onReady(() => {
     });
     app.$mount('#app');
 });
+

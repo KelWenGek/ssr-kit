@@ -1,8 +1,16 @@
 <template>
-    <div>home</div>
+    <div>home
+        <button @click="sayHello">click hello</button>
+    </div>
+
 </template>
 <script>
     export default {
-        name: 'home'
+        name: 'home',
+        methods: {
+            sayHello() {
+                console.log('hello kel');
+            }
+        }
     }
 </script>

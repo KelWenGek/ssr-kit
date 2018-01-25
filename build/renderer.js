@@ -60,6 +60,95 @@ class WebpackDevSSR {
             console.error(err);
         })
     }
+
+    async build() {
+        if (this._buildStatus === STATUS.BUILD_DONE && this.options.dev) {
+            return this;
+        }
+        if (this._buildStatus === STATUS.BUILDING) {
+            await waitFor(1000);
+            return this.build();
+        }
+        this._buildStatus = STATUS.BUILDING;
+        await this.webpackBuild();
+        this._buildStatus = STATUS.BUILD_DONE;
+        return this;
+    }
+    setUpMiddlewares() {
+
+        //Production build
+        function applyMiddleware(middleware, req, res) {
+            const _send = res.send;
+            return new Promise((resolve, reject) => {
+                try {
+                    res.send = function () { _send.apply(res, arguments) && resolve(false) };
+                    middleware(req, res, resolve.bind(null, true));
+                } catch (error) {
+                    reject(error);
+                }
+            });
+        }
+
+        if (this.options.dev) {
+            this.app.use(async (ctx, next) => {
+                let req = ctx.req, res = ctx.res, hasNext;
+                if (this.webpackDevMiddleware) {
+                    hasNext = await applyMiddleware(this.webpackDevMiddleware.bind(this), req, {
+                        send: content => ctx.body = content,
+                        setHeader: function () { ctx.set.apply(ctx, arguments) }
+                    });
+                }
+                if (this.webpackHotMiddleware) {
+                    await this.webpackHotMiddleware(req, res);
+                }
+                hasNext && await next();
+            });
+        } else {
+            //Dev build,file provided by webpack-dev-middleware
+            this.app.use(serveStatic(resolve(this.options.buildDir), {
+                index: false,
+                maxAge: '1y'
+            }));
+        }
+        this.app.use(serveStatic(resolve(this.options.srcDir, 'static')))
+        this.app.use(async (ctx) => {
+            try {
+                let { error, html } = await this.renderRoute(ctx);
+                if (error) {
+                    return ctx.status = 500;
+                } else {
+                    let etag = generateEtag(html);
+                    if (fresh(ctx.headers, { etag })) {
+                        return ctx.status = 304;
+                    }
+                    ctx.set('ETag', etag);
+                }
+                ctx.body = html;
+                return html;
+            } catch (err) {
+                console.error(err);
+                return ctx.status = 500;
+            }
+        });
+    }
+    async renderRoute(ctx) {
+        if (!this.isReady) {
+            await waitFor(1000);
+            return this.renderRoute(ctx);
+        }
+        return new Promise((resolve, reject) => {
+            try {
+                this.bundleRenderer.renderToString(ctx, (err, html) => {
+                    if (err) {
+                        return reject({ error: err });
+                    }
+                    resolve({ error: err, html });
+                });
+            } catch (err) {
+                return reject({ error: err });
+            }
+        });
+    }
     get noSSR() {
         return this.options.render.ssr === false;
     }
@@ -77,77 +166,6 @@ class WebpackDevSSR {
             return Boolean(this.resources.spaTemplate);
         }
         return Boolean(this.resources.ssrTemplate && this.resources.serverBundle);
-    }
-    async build() {
-        if (this._buildStatus === STATUS.BUILD_DONE && !this.options.dev) {
-            return this;
-        }
-        if (this._buildStatus === STATUS.BUILDING) {
-            await waitFor(1000);
-            return this.build();
-        }
-        this._buildStatus = STATUS.BUILDING;
-        await this.webpackBuild();
-        this._buildStatus = STATUS.BUILD_DONE;
-        return this;
-    }
-    setUpMiddlewares() {
-
-        this.app.use(serveStatic(resolve(this.options.buildDir), {
-            index: false, // Don't serve index.html template
-            maxAge: '1y' // 1 year in production
-        }));
-
-        //Dev build,file provided by webpack-dev-middleware
-        if (this.options.dev) {
-            this.app.use(async (ctx, next) => {
-                let req = ctx.req, res = ctx.res;
-                if (this.webpackDevMiddleware) {
-                    await this.webpackDevMiddleware(req, res);
-                }
-                if (this.webpackHotMiddleware) {
-                    await this.webpackHotMiddleware(req, res);
-                }
-                next();
-            });
-
-        } else {
-            //Production build
-        }
-        // this.app.use(serveStatic(resolve(this.options.srcDir, 'static')))
-        this.app.use(async (ctx, next) => {
-            await this.renderRoute(ctx, next);
-        });
-
-    }
-    async renderRoute(ctx, next) {
-        if (!this.isReady) {
-            await waitFor(1000);
-            return this.renderRoute(ctx, next);
-        }
-        // ctx.status = 200;
-        try {
-            await this.bundleRenderer.renderToString(ctx, (err, html) => {
-                if (err) {
-                    ctx.status = 500;
-                    return next(err);
-                } else {
-                    let etag = generateEtag(html);
-                    if (fresh(ctx.headers, { etag })) {
-                        return ctx.status = 304;
-                    }
-                    ctx.set('ETag', etag);
-                }
-                ctx.set('Content-type', 'text/html;charset=utf-8');
-                ctx.set('Content-length', Buffer.byteLength(html));
-                console.log('html: ', html)
-                ctx.body = html;
-                return html;
-            });
-        } catch (err) {
-            console.error(err);
-            return err;
-        }
     }
     async webpackBuild() {
         const compilerOptions = [];
@@ -264,7 +282,6 @@ class WebpackDevSSR {
         if (!this.isResourcesAvailable) {
             return;
         }
-
         if (this.noSSR) {
             return;
         }
@@ -285,7 +302,6 @@ const STATUS = {
     BUILD_DONE: 2,
     BUILDING: 3
 }
-
 const parseTemplate = templateStr => _.template(templateStr, {
     interpolate: /{{([\s\S]+?)}}/g
 })
@@ -312,5 +328,4 @@ const resourceMap = [
         transform: identify
     }
 ]
-
 module.exports = WebpackDevSSR;

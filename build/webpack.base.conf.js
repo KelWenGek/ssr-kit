@@ -12,13 +12,14 @@ module.exports = function webpackBaseConfig(name) {
             path: resolve(this.options.buildDir),
             filename: this.options.build.filename.app,
             chunkFilename: this.options.build.filename.chunk,
-            publicPath: isUrl(this.options.build.publicPath) ? this.options.build.publicPath : urlJoin(this.options.router.base, this.options.build.publicPath)
+            // publicPath: isUrl(this.options.build.publicPath) ? this.options.build.publicPath : urlJoin(this.options.router.base, this.options.build.publicPath),
+            publicPath: this.options.build.publicPath
         },
-        performance: {
-            maxEntrypointSize: 1000000,
-            maxAssetSize: 300000,
-            hints: this.options.dev ? false : 'warning'
-        },
+        // performance: {
+        //     maxEntrypointSize: 1000000,
+        //     maxAssetSize: 300000,
+        //     hints: this.options.dev ? false : 'warning'
+        // },
         module: {
             noParse: /es6-promise\.js$/,
             rules: [

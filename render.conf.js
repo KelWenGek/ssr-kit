@@ -11,7 +11,6 @@ module.exports = {
     srcDir: resolve(__dirname, 'src'),
     buildDir: resolve(__dirname, 'dist'),
     rootDir: resolve(__dirname),
-
     appTemplatePath: resolve(__dirname, 'src/index.html'),
     build: {
         filename: {

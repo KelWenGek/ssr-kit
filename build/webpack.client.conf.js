@@ -37,9 +37,20 @@ module.exports = function webpackClientConfig() {
             filename: this.options.build.filename.manifest
         })
     );
+
     if (this.options.dev) {
+        config.plugins.push(new FriendlyErrorsWebpackPlugin())
+
+        config.plugins.push(new webpack.NamedModulesPlugin())
+
+        // Add HMR support
+        config.entry.app = [
+            // https://github.com/glenjamin/webpack-hot-middleware#config
+            `webpack-hot-middleware/client?name=client&reload=true&timeout=30000&path=${this.options.router.base}/__webpack_hmr`.replace(/\/\//g, '/'),
+            config.entry.app
+        ]
         config.plugins.push(
-            new FriendlyErrorsWebpackPlugin(),
+            new webpack.HotModuleReplacementPlugin(),
             new webpack.NoEmitOnErrorsPlugin()
         )
     }
