@@ -5,7 +5,6 @@ export default ctx => {
         router.push(ctx.url);
         router.onReady(() => {
             const matchedComponents = router.getMatchedComponents();
-            console.log(matchedComponents.length);
             if (!matchedComponents.length) {
                 return reject(
                     {

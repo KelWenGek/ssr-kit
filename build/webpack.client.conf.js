@@ -4,10 +4,12 @@ const VueSSRClientPlugin = require('vue-server-renderer/client-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const base = require('./webpack.base.conf');
+const utils = require('./utils');
 
 module.exports = function webpackClientConfig() {
     let config = base.call(this, 'client');
     config.entry.app = resolve(this.options.srcDir, 'client.js');
+    config.module.rules = config.module.rules.concat(utils.styleLoaders({ sourceMap: false, usePostCSS: true }))
     config.plugins.push(
         new HtmlPlugin({
             filename: 'index.spa.html',

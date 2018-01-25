@@ -75,11 +75,10 @@ class WebpackDevSSR {
         return this;
     }
     setUpMiddlewares() {
-
-        //Production build
         function applyMiddleware(middleware, req, res) {
             const _send = res.send;
             return new Promise((resolve, reject) => {
+                //Proxy the res ,decide whether there is a next middleware
                 try {
                     res.send = function () { _send.apply(res, arguments) && resolve(false) };
                     middleware(req, res, resolve.bind(null, true));
@@ -88,8 +87,8 @@ class WebpackDevSSR {
                 }
             });
         }
-
         if (this.options.dev) {
+            //Dev build,file provided by webpack-dev-middleware
             this.app.use(async (ctx, next) => {
                 let req = ctx.req, res = ctx.res, hasNext;
                 if (this.webpackDevMiddleware) {
@@ -104,17 +103,20 @@ class WebpackDevSSR {
                 hasNext && await next();
             });
         } else {
-            //Dev build,file provided by webpack-dev-middleware
+            //Production build
             this.app.use(serveStatic(resolve(this.options.buildDir), {
                 index: false,
                 maxAge: '1y'
             }));
         }
+        //Statci file served 
         this.app.use(serveStatic(resolve(this.options.srcDir, 'static')))
+        //Finally attach the route render middleware
         this.app.use(async (ctx) => {
             try {
                 let { error, html } = await this.renderRoute(ctx);
                 if (error) {
+                    console.error(error);
                     return ctx.status = 500;
                 } else {
                     let etag = generateEtag(html);

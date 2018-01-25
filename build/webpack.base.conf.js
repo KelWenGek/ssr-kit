@@ -1,6 +1,7 @@
 const { cloneDeep } = require('lodash');
 const { resolve } = require('path');
 const { isUrl, urlJoin } = require('./utils');
+const vueLoaderConfig = require('./vue-loader.conf')
 module.exports = function webpackBaseConfig(name) {
     const config = {
         name,
@@ -25,12 +26,13 @@ module.exports = function webpackBaseConfig(name) {
             rules: [
                 {
                     test: /\.js$/,
-                    use: 'babel-loader',
+                    loader: 'babel-loader',
                     exclude: /node_modules/
                 },
                 {
                     test: /\.vue$/,
-                    use: 'vue-loader'
+                    loader: 'vue-loader',
+                    options: vueLoaderConfig
                 }
             ]
         },

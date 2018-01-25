@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <div>App hello kel </div>
         <router-view></router-view>
     </div>
 </template>
@@ -9,3 +8,4 @@
         name: 'app'
     }
 </script>
+<style lang="scss" src="./App.scss"></style>
