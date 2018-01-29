@@ -1,3 +1,4 @@
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
     isUrl(url) {
         return (url.indexOf('http') === 0 || url.indexOf('//') === 0);
@@ -71,8 +72,8 @@ module.exports = {
     // Generate loaders for standalone style files (outside of .vue)
     styleLoaders(options) {
         const output = []
-        const loaders = this.cssLoaders(options)
 
+        const loaders = this.cssLoaders(options)
         for (const extension in loaders) {
             const loader = loaders[extension]
             output.push({

@@ -26,6 +26,7 @@
     "babel-preset-stage-2": "^6.24.1",
     "css-loader": "^0.28.9",
     "etag": "^1.8.1",
+    "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.6",
     "fresh": "^0.5.2",
     "friendly-errors-webpack-plugin": "^1.6.1",

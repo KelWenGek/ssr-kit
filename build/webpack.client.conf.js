@@ -56,5 +56,6 @@ module.exports = function webpackClientConfig() {
             new webpack.NoEmitOnErrorsPlugin()
         )
     }
+
     return config;
 }

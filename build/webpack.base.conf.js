@@ -1,7 +1,8 @@
 const { cloneDeep } = require('lodash');
 const { resolve } = require('path');
 const { isUrl, urlJoin } = require('./utils');
-const vueLoaderConfig = require('./vue-loader.conf')
+const vueLoaderConfig = require('./vue-loader.conf');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = function webpackBaseConfig(name) {
     const config = {
         name,
@@ -45,5 +46,15 @@ module.exports = function webpackBaseConfig(name) {
         },
         plugins: this.options.plugins || []
     };
+
+    // CSS extraction
+    const extractCSS = this.options.build.extractCSS
+    if (extractCSS) {
+        const extractOptions = Object.assign(
+            { filename: this.options.build.filename.css },
+            typeof extractCSS === 'object' ? extractCSS : {}
+        )
+        config.plugins.push(new ExtractTextPlugin(extractOptions))
+    }
     return cloneDeep(config);
 }

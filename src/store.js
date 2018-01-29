@@ -2,24 +2,38 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 Vue.use(Vuex);
-axios.defaults.baseURL = 'http://127.0.0.1:3000/';
 export function createStore() {
     return new Vuex.Store({
         state: {},
-        actions: {
-            fetchPlaylist({ commit }) {
-                return axios.get('personalized');
-            }
-        },
-        mutations: {
-            setPlaylist(state, payload) {
-                Vue.set(state, 'playlist', payload);
-            },
-            setCount(state, payload) {
-                Vue.set(state, 'count', payload);
-            },
-            addCount(state) {
-                state.count += 1;
+        modules: {
+            home: {
+                namespaced: true,
+                state: {
+                    curIndex: 0,
+                    hotList: []
+                },
+                actions: {
+                    fetchReco({ commit }) {
+                        return Promise.all([
+                            axios.get('personalized'),
+                            axios.get('personalized/newsong')
+                        ]);
+                    }
+                },
+                mutations: {
+                    setPlaylist(state, payload) {
+                        Vue.set(state, 'playlist', payload);
+                    },
+                    setNewsongs(state, payload) {
+                        Vue.set(state, 'newsongs', payload);
+                    },
+                    changeTab(state, index) {
+                        state.curIndex = index;
+                    },
+                    setHotList(state, payload) {
+                        state.hotList = payload;
+                    }
+                }
             }
         }
     });

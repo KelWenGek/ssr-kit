@@ -1,7 +1,7 @@
 <template>
     <div>foo
         <p>{{count}}</p>
-        <button @click="add">add</button>
+        <button @click="add">add</button> <br/>
         <button @click="goToHome">go to home</button>
     </div>
 </template>
@@ -12,6 +12,13 @@
             return {
                 count: 0
             }
+        },
+        asyncData({ store, route }) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve();
+                }, 100);
+            })
         },
         methods: {
             add() {

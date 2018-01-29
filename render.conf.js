@@ -1,6 +1,7 @@
 const { resolve } = require('path');
+const isDev = process.env.NODE_ENV !== 'production';
 module.exports = {
-    dev: process.env.NODE_ENV !== 'production',
+    dev: isDev,
     render: {
         ssr: true,
         bundleRenderer: {}
@@ -15,10 +16,14 @@ module.exports = {
     build: {
         filename: {
             app: '[name].js',
+            css: '[name].css',
             chunk: '[name].js',
             manifest: '[name].js'
         },
         publicPath: '/',
+        extractCSS: isDev ? false : {
+            fallback: 'vue-style-loader'
+        },
         devMiddleware: {},
         hotMiddleware: {},
         ssr: true
