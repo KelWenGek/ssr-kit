@@ -18,14 +18,11 @@ router.onReady(() => {
         if (!activated.length) {
             return next();
         }
-        console.log('预取开始');
-        console.log('activated:', activated);
         Promise.all(activated.map(c => {
             if (c.asyncData) {
                 return c.asyncData({ store, route: to });
             }
         })).then(() => {
-            console.log('预取完成');
             next();
         }).catch(next);
     });

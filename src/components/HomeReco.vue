@@ -8,7 +8,7 @@
                 <div class="remd_ul">
                     <a :key="item.id" class="remd_li" :href="'/m/playlist/'+item.id" v-for="item in playlist">
                         <div class="remd_img">
-                            <img class="u-img" :src="item.picUrl"/>
+                            <img class="u-img" :src="item.picUrl" />
                             <span class="u-earp remd_lnum">{{`${(item.playCount / 10e4).toFixed(1)}万`}}</span>
                         </div>
                         <p class="remd_text">{{item.name}}</p>
@@ -20,7 +20,7 @@
             </h2>
             <div class="remd_newsg">
                 <div class="m-sglst">
-                    <song-item v-for="song in newsongs" :key="song.id" :song="song" />
+                    <song-item v-for="song in newsong" :key="song.id" :song="song" />
                 </div>
             </div>
         </div>
@@ -28,6 +28,7 @@
 </template>
 <script>
     import { mapState } from 'vuex';
+    import home from '@/store/modules/home';
     import SongItem from './SongItem';
     export default {
         name: 'reco',
@@ -35,10 +36,10 @@
             SongItem
         },
         computed: {
-            ...mapState('home/', {
+            ...mapState(home.namespace, {
                 playlist: 'playlist',
-                newsongs(state) {
-                    return state.newsongs.map((item, index) => {
+                newsong(state) {
+                    return state.newsong.map((item, index) => {
                         return item.song;
                     })
                 }

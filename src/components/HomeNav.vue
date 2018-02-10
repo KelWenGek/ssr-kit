@@ -8,7 +8,9 @@
     </nav>
 </template>
 <script>
-    import { mapState, mapMutations } from 'vuex';
+    import { createNamespacedHelpers } from 'vuex';
+    import home from '@/store/modules/home';
+    const vuexHelper = createNamespacedHelpers(home.namespace);
     export default {
         name: 'home-nav',
         data() {
@@ -17,12 +19,12 @@
             }
         },
         computed: {
-            ...mapState('home/', ['curIndex'])
+            ...vuexHelper.mapState(['curIndex'])
         },
         methods: {
-            ...mapMutations('home/', {
+            ...vuexHelper.mapMutations({
                 changeTab(commit, index) {
-                    this.curIndex !== index && commit('changeTab', index)
+                    this.curIndex !== index && commit(home.types.CHANGE_TAB_INDEX, index)
                 }
             })
         }

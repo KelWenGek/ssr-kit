@@ -12,6 +12,9 @@
     import HomeNav from './HomeNav';
     import HomeReco from './HomeReco';
     import HomeHotList from './HomeHotList';
+    import Search from './Search';
+    import home from '@/store/modules/home';
+
     export default {
         name: 'home',
         components: {
@@ -21,7 +24,7 @@
                     let content;
                     switch (this.$store.state.home.curIndex) {
                         case 1: content = HomeHotList; break;
-                        case 2: content = HomeReco; break;
+                        case 2: content = Search; break;
                         default: content = HomeReco; break;
                     }
                     return h(content);
@@ -29,30 +32,10 @@
             },
             HomeNav
         },
-        data() {
-            return {
-
-            }
-        },
-        computed: {
-
-        },
         asyncData({ store, route }) {
             return new Promise((resolve, reject) => {
-                store.dispatch('home/fetchReco').then((res) => {
-                    // console.log(res);
-                    store.commit('home/setPlaylist', res[0].data.code === 200 ? res[0].data.result.slice(0, 6) : []);
-                    store.commit('home/setNewsongs', res[1].data.code === 200 ? res[1].data.result : []);
-                    resolve();
-                }).catch(reject)
+                store.dispatch(home.namespacedTypes.GET_RECOMMEND).then(resolve).catch(reject)
             });
-        },
-        methods: {
-            goToFoo() {
-                this.$router.push({
-                    name: 'foo'
-                })
-            }
         }
     }
 </script>
