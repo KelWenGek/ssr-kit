@@ -7,15 +7,13 @@ const typesArray = [
     'GET_RECOMMEND',
     'SET_PLAYLIST',
     'SET_NEWSONG',
-    'SET_HOT_LIST',
     'GET_HOT_LIST',
     'CHANGE_TAB_INDEX'
 ];
 const home = createStoreModule(namespace, typesArray, function (types) {
     return {
         state: {
-            curIndex: 0,
-            top: []
+            curIndex: 0
         },
         getters: {
             slicedHotList(state) {
@@ -36,6 +34,10 @@ const home = createStoreModule(namespace, typesArray, function (types) {
             },
             //获取热门列表
             async [types.GET_HOT_LIST]({ commit }) {
+                let target = 'top';
+                commit(types.SET_LOADING, {
+                    target
+                });
                 await axios({
                     url: api.top,
                     params: {
@@ -43,11 +45,17 @@ const home = createStoreModule(namespace, typesArray, function (types) {
                     }
                 }).then(({ data }) => {
                     if (data.code === 200) {
-                        commit(types.SET_HOT_LIST, data.playlist.tracks)
+                        commit(types.SET_SUCCESS, {
+                            target,
+                            data: data.playlist.tracks || []
+                        })
                     }
-                }).catch(e => {
-
-                })
+                }).catch(error => {
+                    commit(types.SET_FAILURE, {
+                        target,
+                        error
+                    })
+                });
             }
         },
         mutations: {
@@ -57,13 +65,10 @@ const home = createStoreModule(namespace, typesArray, function (types) {
             [types.SET_NEWSONG](state, payload) {
                 Vue.set(state, 'newsong', payload);
             },
-            [types.SET_HOT_LIST](state, payload) {
-                state.top = payload;
-            },
             [types.CHANGE_TAB_INDEX](state, index) {
                 state.curIndex = index;
             }
         }
     }
-});
+}, ['top']);
 export default home;

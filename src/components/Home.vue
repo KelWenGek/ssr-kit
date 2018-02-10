@@ -14,7 +14,6 @@
     import HomeHotList from './HomeHotList';
     import Search from './Search';
     import home from '@/store/modules/home';
-
     export default {
         name: 'home',
         components: {

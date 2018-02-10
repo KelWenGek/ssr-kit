@@ -5,34 +5,20 @@ import { api } from '@/constant/api';
 const debounceSpeed = 500;
 const search = createStoreModule('search', [
     'SET_KEYWORD',
-    'SET_SUGGEST',
-    'SET_SUGGEST_LOADING',
     'GET_SUGGEST',
-    'SET_HOT',
     'GET_HOT',
     'SET_RESULT',
     'GET_RESULT'
 ], function (types) {
-    return {
+
+    const definition = {
         state: {
             keyword: '',
-            suggestLoading: false,
-            suggestions: [],
-            hots: [],
             result: []
         },
         mutations: {
             [types.SET_KEYWORD](state, keyword) {
                 state.keyword = keyword;
-            },
-            [types.SET_SUGGEST](state, payload) {
-                state.suggestions = payload;
-            },
-            [types.SET_SUGGEST_LOADING](state, payload) {
-                state.suggestLoading = payload;
-            },
-            [types.SET_HOT](state, payload) {
-                state.hots = payload;
             },
             [types.SET_RESULT](state, payload) {
                 state.result = payload;
@@ -40,18 +26,31 @@ const search = createStoreModule('search', [
         },
         actions: {
             async [types.GET_HOT]({ commit }) {
+                let target = 'hots';
+                commit(types.SET_LOADING, {
+                    target
+                });
                 await axios({
                     url: api.hot
                 }).then(({ data }) => {
                     if (data.code === 200) {
-                        commit(types.SET_HOT, data.result.hots);
+                        commit(types.SET_SUCCESS, {
+                            target,
+                            data: data.result.hots || []
+                        });
                     }
-                }).catch(e => {
-
+                }).catch(error => {
+                    commit(types.SET_FAILURE, {
+                        target,
+                        error
+                    })
                 })
             },
-            [types.GET_SUGGEST]: debounce(async function ({ commit }, keyword) {
-                commit(types.SET_SUGGEST_LOADING, true);
+            [types.GET_SUGGEST]: debounce(async function ({ commit, state }, keyword) {
+                let target = 'suggestion';
+                commit(types.SET_LOADING, {
+                    target
+                });
                 await axios({
                     url: api.suggest,
                     params: {
@@ -59,11 +58,16 @@ const search = createStoreModule('search', [
                     }
                 }).then(({ data }) => {
                     if (data.code === 200) {
-                        commit(types.SET_SUGGEST_LOADING, false);
-                        commit(types.SET_SUGGEST, data.result.songs || []);
+                        commit(types.SET_SUCCESS, {
+                            target,
+                            data: data.result.songs || []
+                        });
                     }
-                }).catch(e => {
-
+                }).catch(error => {
+                    commit(types.SET_FAILURE, {
+                        target,
+                        error
+                    })
                 });
             }, debounceSpeed),
             async [types.GET_RESULT]({ commit }, keyword) {
@@ -81,6 +85,7 @@ const search = createStoreModule('search', [
                 })
             }
         }
-    }
-})
+    };
+    return definition;
+}, ['hots', 'suggestion'])
 export default search; 
