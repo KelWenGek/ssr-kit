@@ -15,6 +15,7 @@ const { createBundleRenderer } = require('vue-server-renderer');
 const { sequence, waitFor } = require('./utils');
 const webpackClientConfig = require('./webpack.client.conf');
 const webpackServerConfig = require('./webpack.server.conf');
+const webpackDllConfig = require('./webpack.dll.conf');
 
 class WebpackDevSSR {
     constructor(options) {
@@ -44,8 +45,29 @@ class WebpackDevSSR {
             ]
         };
         this._buildStatus = STATUS.INITIAL;
-
     }
+    vendor() {
+        return [
+            'vue',
+            'vue-router',
+            'vuex'
+        ].concat(this.options.build.vendor).filter(v => v);
+    }
+
+    vendorEntries() {
+        const vendor = this.vendor();
+        const vendorEntries = {};
+        vendor.forEach(v => {
+            try {
+                require.resolve(v);
+                vendorEntries[v] = [v];
+            } catch (e) {
+
+            }
+        });
+        return vendorEntries;
+    }
+
     async ready() {
         await this.build();
         await this.setUpMiddlewares();
@@ -180,6 +202,10 @@ class WebpackDevSSR {
             serverConfig = webpackServerConfig.call(this);
             compilerOptions.push(serverConfig);
         }
+        //Dll webpack config
+        if (this.options.build.dll && this.options.dev) {
+            compilerOptions.push(webpackDllConfig.call(this, clientConfig));
+        }
         // Initialize shared FS and Cache
         let sharedFS = this.options.dev && new MFS;
         let sharedCache = {};
@@ -187,7 +213,7 @@ class WebpackDevSSR {
         this.compilers = compilerOptions.map(compilerOption => {
             let compiler = webpack(compilerOption);
             // In dev, write files in memory FS 
-            if (sharedFS) {
+            if (sharedFS && !compiler.options.name.includes('-dll')) {
                 compiler.outputFileSystem = sharedFS;
             }
             compiler.cache = sharedCache;
@@ -203,6 +229,13 @@ class WebpackDevSSR {
                 //Client dev build, watch is started by dev-middleware
                 if (compiler.options.name === 'client') {
                     return this.webpackDev(compiler);
+                }
+                //Dll dev build
+                if (compiler.options.name.includes('-dll')) {
+                    compiler.run((err, stats) => {
+                        if (err) return reject(err);
+                    });
+                    return;
                 }
                 //Server dev build
                 this.compilersWatching.push(

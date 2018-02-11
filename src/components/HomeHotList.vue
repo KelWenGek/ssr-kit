@@ -1,7 +1,7 @@
 <template>
     <div class="m-hmhot">
         <div class="hotcont">
-            <div v-if="!hasItem" class="u-spin"></div>
+            <div v-if="topLoading" class="u-spin"></div>
             <div v-else class="m-sglst">
                 <song-item v-for="song in showHotList" :key="song.id" :song="song" />
             </div>
@@ -15,7 +15,12 @@
     import { createNamespacedHelpers } from 'vuex';
     import home from '@/store/modules/home';
     import SongItem from './SongItem';
-    const { mapState, mapGetters, mapMutations, mapActions } = createNamespacedHelpers(home.namespace);
+    const {
+        mapState,
+        mapGetters,
+        mapMutations,
+        mapActions
+     } = createNamespacedHelpers(home.namespace);
     export default {
         name: 'home-hot-list',
         components: {
@@ -29,7 +34,7 @@
             }
         },
         computed: {
-            ...mapState(['top']),
+            ...mapState(['top', 'topLoading']),
             ...mapGetters(['slicedHotList']),
             showHotList() {
                 return this.slicedHotList(0, this.pageSize * this.pageIndex).map((item, index) => {
@@ -52,11 +57,6 @@
             }
         },
         methods: {
-            ...mapMutations({
-                setHotList(commit, hotList) {
-                    commit(home.types.SET_HOT_LIST, hotList);
-                }
-            }),
             ...mapActions({
                 getHotList: home.types.GET_HOT_LIST
             }),
@@ -66,7 +66,10 @@
             }
         },
         mounted() {
-            this.getHotList();
+            //todo 增加缓存策略
+            if (!this.top.length) {
+                this.getHotList();
+            }
         }
     }
 </script>

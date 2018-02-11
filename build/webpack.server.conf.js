@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin');
 const base = require('./webpack.base.conf');
 module.exports = function webpackServerConfig() {
-    let config = base.call(this);
+    let config = base.call(this, 'server');
     config = Object.assign(config, {
         target: 'node',
         node: false,

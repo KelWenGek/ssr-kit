@@ -9,16 +9,19 @@ module.exports = {
     router: {
         base: '/'
     },
+    cacheDir: resolve(__dirname, 'dll'),
     srcDir: resolve(__dirname, 'src'),
     buildDir: resolve(__dirname, 'dist'),
     rootDir: resolve(__dirname),
     appTemplatePath: resolve(__dirname, 'src/index.html'),
     build: {
+        vendor: ['axios'],
         filename: {
             app: '[name].js',
             css: '[name].css',
             chunk: '[name].js',
-            manifest: '[name].js'
+            manifest: '[name].js',
+            vendor: '[name]-dll.js'
         },
         publicPath: '/',
         extractCSS: isDev ? false : {
@@ -26,6 +29,7 @@ module.exports = {
         },
         devMiddleware: {},
         hotMiddleware: {},
+        dll: true,
         ssr: true
     },
     watchers: {
