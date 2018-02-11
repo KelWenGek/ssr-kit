@@ -6,7 +6,9 @@ export const api = {
     top: '/top/list', //query idx=1
     hot: 'search/hot',
     suggest: 'search/suggest', //query keywords=
-    result: 'search' //query keywords=
+    result: 'search', //query keywords=
+    album: '/playlist/detail', //query id=
+    album_comment: '/comment/playlist' //query id=
 }
 
 

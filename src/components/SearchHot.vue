@@ -1,5 +1,5 @@
 <template>
-    <section v-show="!hasWord" class="m-hotlist">
+    <section v-show="show" class="m-hotlist">
         <h3 class="title">热门搜索</h3>
         <ul class="list">
             <li :key="index" class="item f-bd f-bd-full" v-for="(item,index) in hots" @click="getSearchResult(item.first)">
@@ -17,9 +17,9 @@
     export default {
         name: 'search-hot',
         computed: {
-            ...mapState(['keyword', 'hots']),
-            hasWord() {
-                return this.keyword.length > 0;
+            ...mapState(['keyword', 'result', 'hots']),
+            show() {
+                return !this.keyword.length && !this.result.length;
             }
         },
         methods: {

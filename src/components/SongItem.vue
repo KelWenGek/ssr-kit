@@ -1,5 +1,5 @@
 <template>
-    <a :key="song.id" class="m-sgitem" :href="'/m/song/'+song.id">
+    <a :key="song.id" class="m-sgitem" :href="'/song/'+song.id">
         <div v-if="song.index" :class="['sgfl',song.index<=3?'sgfl-cred':'']">
             {{song.index<10?'0'+song.index:song.index}}
         </div>

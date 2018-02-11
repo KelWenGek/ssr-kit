@@ -94,13 +94,11 @@ function commonChunksPlugin(config) {
 }
 
 function dllPlugin(config) {
-    const _dll = [];
     const vendorEntries = this.vendorEntries();
     const dllDir = resolve(this.options.cacheDir, config.name + '-dll');
     Object.keys(vendorEntries).forEach(v => {
         const dllManifestFile = resolve(dllDir, v + '-manifest.json');
         if (fs.existsSync(dllManifestFile)) {
-            _dll.push(v);
             config.plugins.push(
                 new webpack.DllReferencePlugin({
                     manifest: dllManifestFile

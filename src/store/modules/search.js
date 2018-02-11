@@ -13,8 +13,12 @@ const search = createStoreModule('search', [
 
     const definition = {
         state: {
-            keyword: '',
-            result: []
+            keyword: ''
+        },
+        getters: {
+            slicedResult(state) {
+                return (start, end) => state.result.slice(start, end);
+            }
         },
         mutations: {
             [types.SET_KEYWORD](state, keyword) {
@@ -48,6 +52,9 @@ const search = createStoreModule('search', [
             },
             [types.GET_SUGGEST]: debounce(async function ({ commit, state }, keyword) {
                 let target = 'suggestion';
+                this._withCommit(() => {
+                    state.result = [];
+                });
                 commit(types.SET_LOADING, {
                     target
                 });
@@ -71,6 +78,10 @@ const search = createStoreModule('search', [
                 });
             }, debounceSpeed),
             async [types.GET_RESULT]({ commit }, keyword) {
+                let target = 'result';
+                commit(types.SET_LOADING, {
+                    target
+                });
                 await axios({
                     url: api.result,
                     params: {
@@ -78,14 +89,20 @@ const search = createStoreModule('search', [
                     }
                 }).then(({ data }) => {
                     if (data.code === 200) {
-                        commit(types.SET_RESULT, data.result.songs);
+                        commit(types.SET_SUCCESS, {
+                            target,
+                            data: data.result.songs || []
+                        });
                     }
-                }).catch(e => {
-
+                }).catch(error => {
+                    commit(types.SET_FAILURE, {
+                        target,
+                        error
+                    })
                 })
             }
         }
     };
     return definition;
-}, ['hots', 'suggestion'])
+}, ['hots', 'suggestion', 'result']);
 export default search; 

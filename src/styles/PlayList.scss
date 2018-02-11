@@ -148,3 +148,171 @@
     background-repeat: no-repeat;
     background-size: 12px auto;
 }
+.u-songs .m-sgitem:last-child .sgfr:after {
+    display: none;
+}
+.m-talk {
+    .cmt_more {
+        margin-left: 50px;
+        .box {
+            display: block;
+            margin-right: 50px;
+            padding: 18px 0;
+            font-size: 14px;
+            color: #999;
+            text-align: center;
+            line-height: 1;
+            i {
+                position: relative;
+                top: -1px;
+                display: inline-block;
+                width: 6px;
+                height: 11px;
+                margin-left: 5px;
+                background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAWCAQAAACx896vAAAApUlEQVR4AWNgYDjDeKbnTDkDJjjDembRmf9n/p2JxpRiP7P3zH8g/HnGF1OS/8wlsOTXM+aYkpJnboMlX53RwZRUAQqDJB+fkcGUNDnzASQJNFwUU9LpzE+w5IkzXJiSEWf+gCU3nmHDlMwESoDgkjOMmJItUMl23FKdBAzEdMbmM2x4HY/p5StnRPEGFGbwvj6jizdSMKPy1xk/ohMALNlUYIoDAK7esfYRq6CVAAAAAElFTkSuQmCC) no-repeat;
+                background-size: 100%;
+                vertical-align: middle;
+            }
+        }
+    }
+}
+
+.m-comments {
+    word-wrap: break-word;
+    word-break: break-all;
+    a {
+        color: #507daf;
+        text-decoration: none;
+    }
+    .cmt_title {
+        margin: 0;
+        padding: 4px 10px;
+        color: #666;
+        font-size: 12px;
+        font-weight: 400;
+        background: rgba(0,0,0,.05);
+    }
+    .cmt_item {
+        padding-top: 10px;
+        width: 100%;
+        display: -webkit-flex;
+        display: -webkit-box;
+        display: flex;
+        -webkit-flex-direction: row;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        flex-direction: row;
+        .cmt_wrap {
+            padding-right: 10px;
+            padding-bottom: 11px;
+            padding-left: 10px;
+            -webkit-flex: auto;
+            -webkit-box-flex: 1;
+            flex: auto;
+            width: 0;
+            .cmt_header {
+                display: -webkit-flex;
+                display: -webkit-box;
+                display: flex;
+                -webkit-flex-direction: row;
+                -webkit-box-orient: horizontal;
+                -webkit-box-direction: normal;
+                flex-direction: row;
+                .cmt_meta {
+                    -webkit-flex: auto;
+                    -webkit-box-flex: 1;
+                    flex: auto;
+                    width: 0;
+                    font-size: 0;
+                }
+                .cmt_user a {
+                    font-size: 14px;
+                    color: #666;
+                    line-height: 20px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    -webkit-box-flex: 1;
+                    -webkit-flex: auto;
+                    flex: auto;
+                }
+                .cmt_time {
+                    font-size: 9px;
+                    color: #999;
+                }
+                .cmt_like {
+                    width: 65px;
+                    height: 22px;
+                    line-height: 22px;
+                    font-size: 11px;
+                    color: #999;
+                    -webkit-flex: none;
+                    -webkit-box-flex: 0;
+                    flex: none;
+                    text-align: right;
+                    vertical-align: baseline;
+                    .cmt_likearea {
+                        padding-left: 5px;
+                    }
+                    .cmt_likeicn {
+                        width: 14px;
+                        height: 14px;
+                        margin-left: 6px;
+                        display: inline-block;
+                        cursor: pointer;
+                    }
+                }
+            }
+            .cmt_content {
+                color: #333;
+                font-size: 15px;
+                line-height: 22px;
+                margin-top: 5px;
+            }
+            .cmt_emoji,.cmt_text {
+                vertical-align: middle;
+            }
+            .cmt_replied {
+                margin: 5px 0;
+                padding: 10px;
+                color: #888;
+                font-size: 14px;
+                line-height: 21px;
+
+                .cmt_replied_user {
+                    vertical-align: middle;
+                }
+                .cmt_emoji {
+                    margin-top: -2px;
+                }
+            }
+        }     
+    }
+    .cmt_head {
+        margin: 0 10px;
+        -webkit-flex: none;
+        -webkit-box-flex: 0;
+        flex: none;
+        &>a {
+            position: relative;
+            display: block;
+        }
+        img {
+            display: block;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+        }
+        &+.cmt_wrap {
+            padding-left: 0;
+        }
+    }
+}
+
+.m-talk .m-comments .cmt_item .cmt_head {
+    height: 35px;
+}
+
+.m-comments .cmt_item:last-child .cmt_wrap:after {
+    border-bottom: none;
+}

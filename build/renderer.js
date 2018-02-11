@@ -61,9 +61,7 @@ class WebpackDevSSR {
             try {
                 require.resolve(v);
                 vendorEntries[v] = [v];
-            } catch (e) {
-
-            }
+            } catch (e) { }
         });
         return vendorEntries;
     }
