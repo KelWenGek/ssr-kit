@@ -6,7 +6,16 @@
             </h2>
             <div class="remd_songs">
                 <div class="remd_ul">
-                    <a :key="item.id" class="remd_li" :href="'/playlist/'+item.id" v-for="item in playlist">
+                    <a :key="item.id" class="remd_li" :href="'/playlist/'+item.id" v-for="item in playlist.slice(0,3)">
+                        <div class="remd_img">
+                            <img class="u-img" :src="item.picUrl" />
+                            <span class="u-earp remd_lnum">{{`${(item.playCount / 10e4).toFixed(1)}万`}}</span>
+                        </div>
+                        <p class="remd_text">{{item.name}}</p>
+                    </a>
+                </div>
+                <div class="remd_ul">
+                    <a :key="item.id" class="remd_li" :href="'/playlist/'+item.id" v-for="item in playlist.slice(3)">
                         <div class="remd_img">
                             <img class="u-img" :src="item.picUrl" />
                             <span class="u-earp remd_lnum">{{`${(item.playCount / 10e4).toFixed(1)}万`}}</span>

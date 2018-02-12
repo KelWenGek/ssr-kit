@@ -1,10 +1,10 @@
 <script>
-    import emoji from '@/shared/emoji';
+    import convert from '@/shared/convert';
     export default {
         name: 'comment-content',
         props: ['content', 'beReplied', 'isRepliedCnt'],
         render(h) {
-            let cnt = emoji.parseContent(this.content).map(c => {
+            let cnt = convert.parseContent(this.content).map(c => {
                 if (c.type === 'text') {
                     return h('span', {
                         class: {

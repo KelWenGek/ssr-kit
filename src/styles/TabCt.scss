@@ -7,7 +7,7 @@
 
 .m-homeremd{
     padding-top:20px;
-
+    
     .remd_tl {
         position: relative;
         padding-left: 9px;
@@ -34,7 +34,7 @@
     }
 
     .remd_ul {
-        // padding-bottom: 16px;
+        padding-bottom: 16px;
         @extend .f-clear;
     }
 
@@ -45,7 +45,6 @@
         padding-left: 1px;
         padding-right: 1px;
         box-sizing: border-box;
-        margin-bottom: 16px;
         &:nth-child(3n+1){
             padding-left: 0;
             padding-right: 2px;

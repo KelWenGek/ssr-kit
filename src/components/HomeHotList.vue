@@ -61,7 +61,7 @@
                 getHotList: home.types.GET_HOT_LIST
             }),
             checkFull() {
-                this.pageIndex = Math.ceil(this.hotList.length / this.pageSize);
+                this.pageIndex = Math.ceil(this.top.length / this.pageSize);
                 this.fullChecked = true;
             }
         },

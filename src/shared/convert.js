@@ -69,6 +69,9 @@ if ("undefined" != typeof window) {
 
 module.exports = {
     parseContent(content) {
+        if (!content) {
+            content = '';
+        }
         let textList = [];
         content.replace(/\[([\u4e00-\u9fff\w]+)\]/g, function (text, word, index) {
             textList.push({
@@ -108,5 +111,36 @@ module.exports = {
             })
         }
         return emojiList;
+    },
+    parseTime(ms) {
+        function check10(num) {
+            if (num < 10) {
+                return `0${num}`
+            }
+            return num;
+        }
+
+        let time = new Date(ms), hm = `${check10(time.getHours())}:${check10(time.getMinutes())}`;
+        let now = new Date(),
+            slaped = (now.getTime() - time.getTime()) / 1000,//过去的秒数
+            min = Math.floor(slaped / 60),
+            hour = Math.floor(slaped / 3600);
+        //找到今天的开始
+        let today = new Date(now.toDateString()),
+            day = Math.floor((today.getTime() - time.getTime()) / (3600 * 24 * 1000));
+        if (day < 0) {
+            if (hour === 0) {
+                if (min >= 0 && min <= 1) {
+                    return '刚刚';
+                } else {
+                    return `${min}分钟前`;
+                }
+            } else {
+                return hm;
+            }
+        } else if (day <= 1) {
+            return `昨天${hm}`;
+        }
+        return `${time.getFullYear()}年${time.getMonth() + 1}月${time.getDate()}日`;
     }
 } 

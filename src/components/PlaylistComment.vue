@@ -14,7 +14,7 @@
                                 {{item.user.nickname}}</a>
                         </span>
                         <div class="cmt_time">
-                            <span>{{item.time}}</span>
+                            <span>{{item.parsedTime}}</span>
                         </div>
                     </div>
                     <div class="cmt_like">
@@ -33,7 +33,7 @@
                 <comment-content :beReplied="item.beReplied" :isRepliedCnt="false" :content="item.content" />
                 <div class="cmt_replied f-bd f-bd-full" v-if="item.beReplied.length>0">
                     <span class="cmt_replied_user">{{`@${item.beReplied[0].user.nickname}：`}}</span>
-                    <comment-content :isRepliedCnt="true"  :content="item.beReplied[0].content" />
+                    <comment-content :isRepliedCnt="true" :content="item.beReplied[0].content" />
                 </div>
             </div>
         </div>
@@ -42,6 +42,7 @@
 <script>
 
     import CommentContent from './CommentContent';
+    import convert from '@/shared/convert';
     export default {
         name: 'playlist-comment',
         components: {
@@ -52,7 +53,7 @@
             finalComments() {
                 return this.comments.map(cmt => {
                     cmt.user.nicknameUrl = `/user/home?nickname=${encodeURIComponent(cmt.user.nickname)}`
-
+                    cmt.parsedTime = convert.parseTime(cmt.time);
                     if (cmt.beReplied.length) {
                         cmt.beReplied[0].user.nicknameUrl = `/user/home?nickname=${encodeURIComponent(cmt.beReplied[0].user.nickname)}`
                     }
