@@ -148,6 +148,74 @@
     background-repeat: no-repeat;
     background-size: 12px auto;
 }
+.u-song {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    .sgi_fl,
+    .sgi_fr {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        
+    }
+    .sgi_fr,
+    .sgich_fl {
+        -webkit-box-flex: 1;
+        -webkit-flex: 1 1 auto;
+        flex: 1 1 auto;
+    }
+    .sgi_fl {
+        -webkit-box-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        width: 40px;
+        font-size: 17px;
+        color: #999;
+    }
+
+    .sgi_fr {
+        position: relative;
+    }
+
+    .sgich_fl {
+        padding: 6px 0;
+        width: 0;
+    }
+    .sgich_fr {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+        padding: 0 10px;
+    }
+
+    .sgich_tl {
+        font-size: 17px;
+    }
+
+    .sgich_info {
+        font-size: 12px;
+        color: #888;
+    }
+
+    .sgich_ply {
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        background-position: -24px 0;
+    }
+
+}
+.u-song.z-dis, .u-song.z-dis .sgi_fl, .u-song.z-dis .sgich_info {
+    color: #ccc;
+}
+
 .u-songs .m-sgitem:last-child .sgfr:after {
     display: none;
 }

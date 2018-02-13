@@ -1,3 +1,4 @@
+import { pad } from './util';
 const emojiMap = {
     "大笑": "86",
     "可爱": "85",
@@ -113,14 +114,7 @@ module.exports = {
         return emojiList;
     },
     parseTime(ms) {
-        function check10(num) {
-            if (num < 10) {
-                return `0${num}`
-            }
-            return num;
-        }
-
-        let time = new Date(ms), hm = `${check10(time.getHours())}:${check10(time.getMinutes())}`;
+        let time = new Date(ms), hm = `${pad(time.getHours(), '0')}:${pad(time.getMinutes(), '0')}`;
         let now = new Date(),
             slaped = (now.getTime() - time.getTime()) / 1000,//过去的秒数
             min = Math.floor(slaped / 60),
@@ -138,7 +132,7 @@ module.exports = {
             } else {
                 return hm;
             }
-        } else if (day <= 1) {
+        } else if (day < 1) {
             return `昨天${hm}`;
         }
         return `${time.getFullYear()}年${time.getMonth() + 1}月${time.getDate()}日`;

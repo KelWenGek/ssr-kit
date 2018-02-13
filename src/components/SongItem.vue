@@ -1,7 +1,7 @@
 <template>
     <a :key="song.id" class="m-sgitem" :href="'/song/'+song.id">
-        <div v-if="song.index" :class="['sgfl',song.index<=3?'sgfl-cred':'']">
-            {{song.index<10?'0'+song.index:song.index}}
+        <div v-if="hasIndex" class="sgfl" :class="songClass">
+            {{songIndex}}
         </div>
         <div class="sgfr f-bd f-bd-btm">
             <div class="sgchfl">
@@ -31,8 +31,22 @@
     </a>
 </template>
 <script>
+    import { pad } from '@/shared/util';
     export default {
         name: 'song-item',
-        props: ['song']
+        props: ['song'],
+        computed: {
+            songIndex() {
+                return pad(this.song.index, '0');
+            },
+            hasIndex() {
+                return this.song.index != undefined;
+            },
+            songClass() {
+                return {
+                    'sgfl-cred': this.hasIndex && parseInt(this.song.index) <= 3 && this.song.highlight
+                }
+            }
+        }
     }
 </script>

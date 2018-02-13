@@ -41,18 +41,35 @@
         <div class="pylst_list">
             <h3 class="u-smtitle">歌曲列表</h3>
             <ol class="u-songs">
-                <song-item :key="item.id" :song="item" v-for="item in playlistSongs" />
+                <li class="u-song" :class="{'z-dis':item.copyright!=0}" :key="item.id" v-for="(item,index) in playlistSongs">
+                    <div class="sgi_fl">{{index+1}}</div>
+                    <div class="sgi_fr f-bd f-bd-btm">
+                        <div class="sgich_fl">
+                            <div class="f-thide sgich_tl">
+                                {{item.name}}
+                            </div>
+                            <div class="f-thide sgich_info">
+                                {{`${item.ar[0].name}-${item.al.name}`}}
+                            </div>
+                        </div>
+                        <div class="sgich_fr">
+                            <span class="u-hmsprt sgich_ply"></span>
+                        </div>
+                    </div>
+                </li>
             </ol>
         </div>
         <div class="m-talk">
-            <div class="m-comments">
-                <h4 class="cmt_title">精彩评论</h4>
-                <playlist-comment :comments="hotComments" />
-            </div>
-            <div class="m-comments">
-                <h4 class="cmt_title">{{`最新评论(${total})`}}</h4>
-                <playlist-comment :comments="comments" />
-            </div>
+            <playlist-comment title="精彩评论" :comments="hotComments">
+                <h4 class="cmt_title" slot="header" slot-scope="{title}">
+                    {{title}}
+                </h4>
+            </playlist-comment>
+            <playlist-comment :title="`最新评论`+total" :comments="comments">
+                <h4 class="cmt_title" slot="header" slot-scope="{title}">
+                    {{title}}
+                </h4>
+            </playlist-comment>
             <div class="cmt_more f-bd f-bd-top" v-if="playlistCmt.more">
                 <span class="box">
                     {{`查看全部${total}条评论`}}
@@ -94,15 +111,16 @@
                 return this.playlist.description.split('\n');
             },
             playlistSongs() {
-                return this.playlist.tracks.slice(0, 40).map((item, index) => ({
-                    index: index + 1,
-                    id: item.id,
-                    name: item.name,
-                    artists: item.ar,
-                    alias: item.alia,
-                    album: item.al,
-                    highlight: true
-                }))
+                //     return this.playlist.tracks.map((item, index) => ({
+                //         index: index + 1,
+                //         id: item.id,
+                //         name: item.name,
+                //         artists: item.ar,
+                //         alias: item.alia,
+                //         album: item.al,
+                //         highlight: false
+                //     }))
+                return this.playlist.tracks;
             }
         },
         methods: {
