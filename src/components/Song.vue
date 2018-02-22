@@ -5,8 +5,8 @@
             <div class="m-scroll_scroller m-scroll_scroller_vertical">
                 <div class="m-song_newfst">
                     <!-- <span class="m-logo"></span> -->
-                    <song-info/>
-                    <song-lyric/>
+                    <song-info ref="songImg" />
+                    <song-lyric ref="songLyc" />
                     <song-play :auto-play="true" ref="songAudio" />
                     <div>
                         <div class="m-giude" style="bottom: '-14px'">
@@ -43,6 +43,18 @@
                     opacity: 1
                 }
             }
+        },
+        mounted() {
+            this.transform = function (e) {
+                var t = ["transform", "webkitTransform", "msTransform", "MozTransform"];
+                for (var n in t)
+                    if (void 0 !== e.style[t[n]])
+                        return t[n];
+                return t[1];
+            }(document.createElement("div"));
+            // this.$nextTick(() => {
+            //     document.querySelector('.song_newfst').style.height = document.querySelector('.j-songsrl').offsetHeight;
+            // })
         },
         async asyncData({ store, route }) {
             await store.dispatch(song.namespacedTypes.GET_SONG_INFO, route.params.id);

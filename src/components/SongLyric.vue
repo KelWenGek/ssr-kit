@@ -7,7 +7,17 @@
         </h2>
         <div class="m-song-lrc f-pr">
             <div class="m-song-scroll" :class="lrcTransCls" :style="lrcScrollerStyle">
-                <lyric-scroller :index="lrcIndex" :lyric="songLyric" ref="lycScl" />
+                <div class="m-song-iner" ref="lycScl" :style="scrollerTransform">
+                    <p :key="line.tag" class="m-song-lritem j-lritem" v-for="line in songLyric.lines">
+                        <span v-if="!songLyric.hasTrans">
+                            {{line.lyric||`&nbsp;`}}
+                        </span>
+                        <template v-else>
+                            <span class="m-song-lrori">{{line.lyric||`&nbsp;`}}</span>
+                            <span class="m-song-lrtra">{{line.tlyric||`&nbsp;`}}</span>
+                        </template>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -15,7 +25,6 @@
 <script>
     import { createNamespacedHelpers } from 'vuex';
     import findIndex from 'lodash/findIndex';
-    import LyricScroller from './LyricScroller';
     import lyric from '@/shared/lyric';
     import song from '@/store/modules/song';
     const {
@@ -24,9 +33,6 @@
     } = createNamespacedHelpers(song.namespace);
     export default {
         name: 'song-lyric',
-        components: {
-            LyricScroller
-        },
         computed: {
             ...mapState(['song', 'songLyric', 'lrcIndex']),
             lrcTransCls() {
@@ -38,6 +44,24 @@
                 return this.songLyric._other.outerHeight ? {
                     height: this.songLyric._other.outerHeight + 'px'
                 } : {};
+            },
+            scrollerTransform() {
+                let current = 0, transformKey = this.$parent.transform, heights = this.songLyric._other.heights;
+                if (heights) {
+                    for (var i = 0, len = heights.length; i < len; i++) {
+                        if (i < this.lrcIndex - 1) {
+                            current += heights[i];
+                        } else {
+                            break;
+                        }
+                    }
+                    return {
+                        [transformKey]: `translateY(-${current}px)`
+                    };
+                }
+                return {
+                    [transformKey]: `translateY(0px)`
+                }
             }
         },
         methods: {
@@ -50,8 +74,6 @@
                     lyric: this.songLyric,
                     lritems
                 });
-                console.log(this.songLyric.lines);
-                console.log(_other);
                 this.setLyricOtherData(_other);
             },
             setLrcScrollerTimer() {
@@ -68,12 +90,11 @@
             },
             setLrcScrollerTransform() {
                 this.$nextTick(() => {
-                    let scrollerEl = this.$refs.lycScl.$el;
+                    let scrollerEl = this.$refs.lycScl;
                     if (this.lrcIndex > 0) {
                         scrollerEl.childNodes[this.lrcIndex - 1].style.color = ``;
                     }
                     scrollerEl.childNodes[this.lrcIndex].style.color = `rgba(255,255,255,1)`;
-                    scrollerEl.style.transform = this.getScrollerTransform();
                 });
             },
             removeResize() {
@@ -82,27 +103,12 @@
             ...mapMutations({
                 setLyricOtherData: song.types.SET_SONG_LYRIC_OTHER_DATA,
                 setLyricIndex: song.types.SET_SONG_LYRIC_INDEX
-            }),
-            getScrollerTransform() {
-                let current = 0, heights = this.songLyric._other.heights;
-                for (var i = 0, len = heights.length; i < len; i++) {
-                    if (i < this.lrcIndex) {
-                        current += heights[i];
-                    } else {
-                        break;
-                    }
-                }
-                return `translateY(-${current}px)`;
-                // return {
-                //     transform: `translateY(-${current}px)`
-                // };
-            }
+            })
         },
         mounted() {
             this.resize();
             this.$nextTick(() => {
                 this.setLrcScrollerTimer();
-
             });
             window.addEventListener('resize', this.resize, false);
         }

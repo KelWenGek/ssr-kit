@@ -45,35 +45,34 @@
             setTransformStyle() {
                 let songImg = this.$refs.roll,
                     songWrap = this.$refs.turn,
-                    songImgTransform = getComputedStyle(songImg, null)[this.transform],
-                    songWrapTransform = getComputedStyle(songWrap, null)[this.transform];
+                    transformKey = this.$parent.transform,
+                    songImgTransform = getComputedStyle(songImg, null)[transformKey],
+                    songWrapTransform = getComputedStyle(songWrap, null)[transformKey];
                 let transform = songWrapTransform === 'none' ? songImgTransform : songImgTransform.concat(' ', songWrapTransform);
-                this.transformStyle = { [this.transform]: transform }
+                this.transformStyle = { [transformKey]: transform }
             },
             startPlay() {
-                
+
             },
             ...mapMutations({
                 setPlayStatus: song.types.SET_SONG_PLAY_STATUS
             }),
             changePlayStatus() {
                 let currentStatus = this.isPause;
-                if (!currentStatus) {
+                let lycWrapper = this.$parent.$refs.songLyc;
+                let playWrapper = this.$parent.$refs.songAudio;
+
+                if (!currentStatus && !playWrapper.el.ended) {
                     this.setTransformStyle();
                     this.setPlayStatus(false);
+                    lycWrapper.lyrSclTimer && clearInterval(lycWrapper.lyrSclTimer);
+                    playWrapper.endPlayTimer && clearTimeout(playWrapper.endPlayTimer);
                 } else {
                     this.setPlayStatus(true);
+                    lycWrapper.setLrcScrollerTimer();
+                    playWrapper.setPlayEndTimer();
                 }
             }
-        },
-        mounted() {
-            this.transform = function (e) {
-                var t = ["transform", "webkitTransform", "msTransform", "MozTransform"];
-                for (var n in t)
-                    if (void 0 !== e.style[t[n]])
-                        return t[n];
-                return t[1];
-            }(document.createElement("div"));
         }
     }
 </script>
