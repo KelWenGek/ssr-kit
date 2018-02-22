@@ -14,6 +14,11 @@ export function createRouter() {
                 name: 'playlist',
                 path: '/playlist/:id',
                 component: () => import('@/components/Playlist')
+            },
+            {
+                name: 'song',
+                path: '/song/:id',
+                component: () => import('@/components/Song')
             }
         ]
     });

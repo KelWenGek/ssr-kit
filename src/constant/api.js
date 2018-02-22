@@ -8,7 +8,10 @@ export const api = {
     suggest: 'search/suggest', //query keywords=
     result: 'search', //query keywords=
     album: '/playlist/detail', //query id=
-    album_comment: '/comment/playlist' //query id=
+    album_comment: '/comment/playlist', //query id=
+    music_url: '/music/url',//query id=
+    lyric: '/lyric',//query id=
+    song_detail: '/song/detail'//query ids=
 }
 
 

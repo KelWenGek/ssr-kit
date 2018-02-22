@@ -4,7 +4,6 @@ node_js:
 cache:
   directories:
     - "node_modules"
-script:
-  - npm run dev
+install:true
 after_success:
-- echo 'travis success'
+- cd ~/Document/server-ssr-kit && git pull && npm run dev

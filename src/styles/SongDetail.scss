@@ -99,23 +99,6 @@
     padding-top: 63px;
 }
 
-
-
-@media screen and (min-width: 414px)
-{
-    .m-song-disc {
-        width: 342px;
-        height: 342px;
-    }
-}
-
-@media screen and (min-width: 360px)
-{
-    .m-song-disc {
-        width: 296px;
-        height: 296px;
-    }
-}
 .m-song-disc {
     position: relative;
     width: 248px;
@@ -129,7 +112,7 @@
         z-index: 5;
         width: 84px;
         height: 122px;
-        background: url(//s3.music.126.net/m/s/img/needle.png?702cf6d…) no-repeat;
+        background: url(//s3.music.126.net/m/s/img/needle.png?702cf6d95f29e2e594f53a3caab50e12) no-repeat;
         background-size: contain;
     }
 }
@@ -278,9 +261,29 @@
     transition: transform .3s ease-out;
 }
 
+
+
+.m-song-lrori {
+    display: block;
+    font-size: 14px;
+    line-height: 1.2;
+}
+
+.m-song-lrtra {
+    display: block;
+    min-height: 19px;
+}
+
 .m-song-lritem {
     padding-bottom: 5px;
 }
+
+.m-song-lrtrans .m-song-lritem {
+    padding-bottom: 4px;
+}
+
+
+
 
 .m-giude {
     height: 36px;
@@ -350,4 +353,81 @@
         -webkit-transform: rotate(1turn);
         transform: rotate(1turn);
     }
+}
+
+@media screen and (min-width: 360px){
+    .m-song-disc {
+        width: 296px;
+        height: 296px;
+    }
+    .m-song-rollwrap {
+        width: 184px;
+        height: 184px;
+        margin: -92px 0 0 -92px;
+    }
+
+    .m-song-disc:after {
+        width: 96px;
+        height: 137px;
+        top: -70px;
+        left: 133px;
+        background-image: url(//s3.music.126.net/m/s/img/needle-ip6.png?be4ebbeb6befadfcae75ce174e7db862);
+    }
+
+    .m-song-wrap {
+        padding-top: 70px;
+    }
+}
+
+
+@media screen and (min-width: 375px){
+
+    .m-song-lrori {
+        font-size: 16px;
+    }
+
+    .m-song-scroll {
+        font-size: 16px;
+    }
+
+    .m-song-lritem {
+        padding-bottom: 8px;
+    }
+    .m-song-lrtrans .m-song-lritem {
+        padding-bottom: 6px;
+    }
+
+    .m-song-h2 {
+        font-size: 18px;
+    }
+
+    .m-song-autr, .m-song-pure {
+        font-size: 16px;
+    }
+}
+
+
+
+@media screen and (min-width: 414px){
+    .m-song-disc {
+        width: 342px;
+        height: 342px;
+    }
+    .m-song-rollwrap {
+        width: 212px;
+        height: 212px;
+        margin: -106px 0 0 -106px;
+    }
+
+    .m-song-disc:after {
+        width: 110px;
+        height: 157px;
+        top: -80px;
+        left: 150px;
+        background-image: url(//s3.music.126.net/m/s/img/needle-plus.png?994aa910ce3e4d242eb7076620b0e502);
+    }
+    .m-song-wrap {
+        padding-top: 80px;
+    }
+    
 }

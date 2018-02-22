@@ -45,6 +45,7 @@
                     class: {
                         at: true
                     },
+                 
                     attr: {
                         href: this.beReplied[0].user.nicknameUrl
                     },

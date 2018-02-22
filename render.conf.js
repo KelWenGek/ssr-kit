@@ -29,7 +29,7 @@ module.exports = {
         },
         devMiddleware: {},
         hotMiddleware: {},
-        dll: true,
+        dll: false,
         ssr: true
     },
     watchers: {

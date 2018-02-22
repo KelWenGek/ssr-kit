@@ -111,15 +111,6 @@
                 return this.playlist.description.split('\n');
             },
             playlistSongs() {
-                //     return this.playlist.tracks.map((item, index) => ({
-                //         index: index + 1,
-                //         id: item.id,
-                //         name: item.name,
-                //         artists: item.ar,
-                //         alias: item.alia,
-                //         album: item.al,
-                //         highlight: false
-                //     }))
                 return this.playlist.tracks;
             }
         },
