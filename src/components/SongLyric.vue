@@ -77,16 +77,29 @@
                 this.setLyricOtherData(_other);
             },
             setLrcScrollerTimer() {
-                let lines = this.songLyric.lines, audio = this.$parent.$refs.songAudio.el;
+                let lines = this.songLyric.lines,
+                    audio = this.$parent.$refs.songAudio.el;
                 this.start = Date.now() - audio.currentTime * 1000
                 this.lyrSclTimer = setInterval(() => {
                     this.now = Date.now();
                     let slaped = this.now - this.start,
                         current = findIndex(lines, (lyr, index) => {
-                            return index === lines.length - 1 || (slaped >= lyr.time * 1000 && slaped <= lines[index + 1].time * 1000)
+                            return index === lines.length - 1 ||
+                                (
+                                    slaped >= lyr.time * 1000 &&
+                                    slaped <= lines[index + 1].time * 1000
+                                )
                         });
-                    current !== this.last && (this.last = current, this.setLyricIndex(current), this.setLrcScrollerTransform());
+                    current !== this.last && (
+                        this.last = current,
+                        this.setLyricIndex(current),
+                        this.setLrcScrollerTransform()
+                    );
                 }, 16);
+            },
+            removeLrcScrollerTimer() {
+                this.lyrSclTimer && clearInterval(this.lyrSclTimer);
+                this.lyrSclTimer = null;
             },
             setLrcScrollerTransform() {
                 this.$nextTick(() => {
@@ -107,9 +120,6 @@
         },
         mounted() {
             this.resize();
-            this.$nextTick(() => {
-                this.setLrcScrollerTimer();
-            });
             window.addEventListener('resize', this.resize, false);
         }
     }

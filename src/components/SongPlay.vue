@@ -12,18 +12,6 @@
             ...mapState(['song', 'songPlay']),
             src() {
                 return this.songPlay.url;
-            },
-            playing() {
-                return this.songPlay.playing;
-            }
-        },
-        watch: {
-            playing(val, oldVal) {
-                if (val) {
-                    this.el.play();
-                } else {
-                    this.el.pause();
-                }
             }
         },
         methods: {
@@ -34,20 +22,6 @@
             setSource(src) {
                 this.el.src = src;
                 this.autoPlay && this.el.play();
-            },
-            setPlayEndTimer() {
-                let interval = this.song.dt - this.el.currentTime * 1000;
-                let lycWrapper = this.$parent.$refs.songLyc;
-                this.endPlayTimer = setTimeout(() => {
-                    this.setPlayStatus(false);
-                    //设置旋转动画
-                    this.$parent.$refs.songImg.setTransformStyle();
-                    //设置歌词滚动序号
-                    this.setLyricIndex(0);
-                    //删除歌词滚动timer
-                    lycWrapper.lyrSclTimer && clearInterval(lycWrapper.lyrSclTimer);
-
-                }, interval);
             }
         },
         render(h) {
@@ -55,11 +29,32 @@
         },
         mounted() {
             let audio = this.el = new Audio(this.src);
-            audio.autoPlay = this.autoPlay;
-            this.src && this.setSource(this.src);
+            let self = this;
+            audio.autoplay = this.autoPlay;
             this.$nextTick(() => {
-                this.setPlayEndTimer();
-            })
+                let refs = self.$parent.$refs,
+                    infoWrapper = refs.songImg,
+                    lycWrapper = refs.songLyc;
+                //音乐播放
+                audio.onplay = function () {
+                    lycWrapper.setLrcScrollerTimer();
+                };
+                //音乐暂停
+                audio.onpause = function () {
+                    lycWrapper.removeLrcScrollerTimer();
+                };
+                //音乐结束
+                audio.onended = function () {
+                    //设置旋转动画
+                    infoWrapper.setTransformStyle();
+                    self.setPlayStatus(false);
+                    //设置歌词滚动序号
+                    self.setLyricIndex(0);
+                    //删除歌词滚动timer
+                    lycWrapper.removeLrcScrollerTimer();
+                }
+            });
+            this.src && this.setSource(this.src);
         }
     }
 </script>

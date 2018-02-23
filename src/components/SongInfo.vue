@@ -11,7 +11,7 @@
                     <div class="m-song-light" :class="circlingCls"></div>
                 </div>
             </div>
-            <span v-if="isPause" class="m-song-plybtn" @click="startPlay"></span>
+            <span v-if="isPause" class="m-song-plybtn"></span>
         </div>
         <div class="m-song-clickarea" @click="changePlayStatus"></div>
     </div>
@@ -51,26 +51,19 @@
                 let transform = songWrapTransform === 'none' ? songImgTransform : songImgTransform.concat(' ', songWrapTransform);
                 this.transformStyle = { [transformKey]: transform }
             },
-            startPlay() {
-
-            },
             ...mapMutations({
                 setPlayStatus: song.types.SET_SONG_PLAY_STATUS
             }),
             changePlayStatus() {
                 let currentStatus = this.isPause;
-                let lycWrapper = this.$parent.$refs.songLyc;
                 let playWrapper = this.$parent.$refs.songAudio;
-
                 if (!currentStatus && !playWrapper.el.ended) {
                     this.setTransformStyle();
                     this.setPlayStatus(false);
-                    lycWrapper.lyrSclTimer && clearInterval(lycWrapper.lyrSclTimer);
-                    playWrapper.endPlayTimer && clearTimeout(playWrapper.endPlayTimer);
+                    playWrapper.el.pause();
                 } else {
                     this.setPlayStatus(true);
-                    lycWrapper.setLrcScrollerTimer();
-                    playWrapper.setPlayEndTimer();
+                    playWrapper.el.play();
                 }
             }
         }
