@@ -1,9 +1,11 @@
 <template>
     <div class="m-song-info">
         <h2 class="m-song-h2">
-            <span class="m-song-sname">{{song.name}}</span>
-            <span class="m-song-gap">-</span>
-            <b class="m-song-autr">{{song.ar.map(ar=>ar.name).join('/')}}</b>
+           
+                <span class="m-song-sname">{{song.name+' '+song.alia}}</span>
+               
+                <span class="m-song-gap">-</span>
+                <b class="m-song-autr">{{song.ar.map(ar=>ar.name).join('/')}}</b>
         </h2>
         <div class="m-song-lrc f-pr">
             <div class="m-song-scroll" :class="lrcTransCls" :style="lrcScrollerStyle">

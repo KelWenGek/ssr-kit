@@ -29,7 +29,7 @@ export default {
             })
         }
         return {
-            lines: tags.map(tag => lines[tag]),
+            lines: tags.map(tag => lines[tag]).filter(line => line.lyric),
             hasTrans,
             scrollable: true,
             _other: {}
