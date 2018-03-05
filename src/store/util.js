@@ -116,13 +116,13 @@ export function createStoreModule(namespace, typesArray, definition, targestNeed
     if (targestNeedLoading && targestNeedLoading.length > 0) {
         res.state = targestNeedLoading.reduce((state, target) => {
             return Object.assign({}, state, completeState(target))
-        }, res.state);
+        }, res.state || {});
         res.getters = targestNeedLoading.reduce((getters, target) => {
             return Object.assign({}, getters, { [target]: state => state[target].data });
-        }, res.getters);
-        res.mutations = Object.assign({}, res.mutations, completeMutationWithTarget(targestNeedLoading));
+        }, res.getters || {});
+        res.mutations = Object.assign({}, res.mutations || {}, completeMutationWithTarget(targestNeedLoading));
     }
-    res.mutations = Object.assign({}, res.mutations, completeMutation())
+    res.mutations = Object.assign({}, res.mutations || {}, completeMutation())
     return {
         mod: res,
         types,

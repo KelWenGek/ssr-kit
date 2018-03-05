@@ -21,6 +21,7 @@
     import song from '@/store/modules/song';
     const {
         mapState,
+        mapGetters,
         mapMutations
     } = createNamespacedHelpers(song.namespace);
     export default {
@@ -31,7 +32,7 @@
             }
         },
         computed: {
-            ...mapState(['song', 'songPlay']),
+            ...mapGetters(['song', 'songPlay']),
             isPause() {
                 return !this.songPlay.playing;
             },

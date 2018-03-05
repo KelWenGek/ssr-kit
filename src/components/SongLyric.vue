@@ -1,14 +1,15 @@
 <template>
     <div class="m-song-info">
         <h2 class="m-song-h2">
-           
-                <span class="m-song-sname">{{song.name+' '+song.alia}}</span>
-               
-                <span class="m-song-gap">-</span>
-                <b class="m-song-autr">{{song.ar.map(ar=>ar.name).join('/')}}</b>
+
+            <span class="m-song-sname">{{song.name+' '+song.alia}}</span>
+
+            <span class="m-song-gap">-</span>
+            <b class="m-song-autr">{{song.ar.map(ar=>ar.name).join('/')}}</b>
         </h2>
         <div class="m-song-lrc f-pr">
-            <div class="m-song-scroll" :class="lrcTransCls" :style="lrcScrollerStyle">
+            <p v-if="songLyricLoading" class="m-song-lremp">歌词正在加载...</p>
+            <div v-else class="m-song-scroll" :class="lrcTransCls" :style="lrcScrollerStyle">
                 <div class="m-song-iner" ref="lycScl" :style="scrollerTransform">
                     <p :key="line.tag" class="m-song-lritem j-lritem" v-for="line in songLyric.lines">
                         <span v-if="!songLyric.hasTrans">
@@ -31,12 +32,19 @@
     import song from '@/store/modules/song';
     const {
         mapState,
+        mapGetters,
         mapMutations
     } = createNamespacedHelpers(song.namespace);
     export default {
         name: 'song-lyric',
         computed: {
-            ...mapState(['song', 'songLyric', 'lrcIndex']),
+            ...mapState(['lrcIndex', 'songLyricLoading']),
+            ...mapState({
+                songLyricLoaded(state) {
+                    return state.songLyric.loaded;
+                }
+            }),
+            ...mapGetters(['song', 'songLyric']),
             lrcTransCls() {
                 return {
                     'm-song-lrtrans': this.songLyric.hasTrans
@@ -64,6 +72,13 @@
                 return {
                     [transformKey]: `translateY(0px)`
                 }
+            }
+        },
+        watch: {
+            songLyricLoaded(val) {
+                this.$nextTick(() => {
+                    val && this.resize();
+                });
             }
         },
         methods: {
@@ -117,12 +132,21 @@
             },
             ...mapMutations({
                 setLyricOtherData: song.types.SET_SONG_LYRIC_OTHER_DATA,
-                setLyricIndex: song.types.SET_SONG_LYRIC_INDEX
+                setLyricIndex: song.types.SET_SONG_LYRIC_INDEX,
+                setLyricLoaded: song.types.SET_SONG_LYRIC_LOADED
             })
         },
         mounted() {
-            this.resize();
+            this.$nextTick(() => {
+                this.resize();
+            });
             window.addEventListener('resize', this.resize, false);
+        },
+        destroyed() {
+            this.removeLrcScrollerTimer();
+            this.removeResize();
+            this.setLyricIndex(0);
+            this.setLyricLoaded(false);
         }
     }
 </script>
