@@ -13,11 +13,12 @@
 <script>
     import { createNamespacedHelpers } from 'vuex';
     import search from '@/store/modules/search';
-    const { mapState, mapMutations, mapActions } = createNamespacedHelpers(search.namespace);
+    const { mapState, mapGetters, mapMutations, mapActions } = createNamespacedHelpers(search.namespace);
     export default {
         name: 'search-hot',
         computed: {
-            ...mapState(['keyword', 'result', 'hots']),
+            ...mapState(['keyword']),
+            ...mapGetters(['result', 'hots']),
             show() {
                 return !this.keyword.length && !this.result.length;
             }

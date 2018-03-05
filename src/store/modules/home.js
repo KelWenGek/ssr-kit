@@ -5,6 +5,8 @@ import { api } from '@/constant/api';
 const namespace = 'home';
 const typesArray = [
     'GET_RECOMMEND',
+    'GET_RECO_PLAYLIST',
+    'GET_NEWSONG',
     'SET_PLAYLIST',
     'SET_NEWSONG',
     'GET_HOT_LIST',
@@ -16,25 +18,81 @@ const home = createStoreModule(namespace, typesArray, function (types) {
             curIndex: 0
         },
         getters: {
-            slicedHotList(state) {
-                return (start, end) => state.top.slice(start, end);
+            slicedHotList(state, getters) {
+                return (start, end) => getters.top.slice(start, end);
             }
         },
         actions: {
             //获取推荐列表
-            async [types.GET_RECOMMEND]({ commit }) {
+            async [types.GET_RECOMMEND]({ commit, dispatch }) {
                 await Promise.all([
-                    axios.get(api.playlist),
-                    axios.get(api.newsong)
-                ]).then((res) => {
-                    let playlist = res[0].data, newsong = res[1].data;
-                    commit(types.SET_PLAYLIST, playlist.code === 200 ? playlist.result.slice(0, 6) : []);
-                    commit(types.SET_NEWSONG, newsong.code === 200 ? newsong.result : []);
+                    dispatch(types.GET_RECO_PLAYLIST),
+                    dispatch(types.GET_NEWSONG)
+                ])
+            },
+            //获取推荐歌单
+            async [types.GET_RECO_PLAYLIST]({ commit, state }) {
+                let target = 'playlist';
+                if (state[target].loaded) {
+                    return await Promise.resolve();
+                }
+                let payload = {
+                    target
+                }
+                commit(types.SET_LOADING, {
+                    target
                 });
+                await axios.get(api.playlist)
+                    .then(({ data }) => {
+                        if (data.code === 200) {
+                            commit(types.SET_SUCCESS, {
+                                target,
+                                data: {
+                                    data: data.result.slice(0, 6) || [],
+                                    loaded: true
+                                }
+                            });
+                        }
+                    }).catch(error => {
+                        commit(types.SET_FAILURE, {
+                            target,
+                            error
+                        })
+                    });
+            },
+            //获取最新歌曲
+            async [types.GET_NEWSONG]({ commit, state }) {
+                let target = 'newsong';
+                if (state[target].loaded) {
+                    return await Promise.resolve();
+                }
+                commit(types.SET_LOADING, {
+                    target
+                });
+                await axios.get(api.newsong)
+                    .then(({ data }) => {
+                        if (data.code === 200) {
+                            commit(types.SET_SUCCESS, {
+                                target,
+                                data: {
+                                    data: data.result || [],
+                                    loaded: true
+                                }
+                            });
+                        }
+                    }).catch(error => {
+                        commit(types.SET_FAILURE, {
+                            target,
+                            error
+                        })
+                    })
             },
             //获取热门列表
-            async [types.GET_HOT_LIST]({ commit }) {
+            async [types.GET_HOT_LIST]({ commit, state }) {
                 let target = 'top';
+                if (state[target].loaded) {
+                    return await Promise.resolve();
+                }
                 commit(types.SET_LOADING, {
                     target
                 });
@@ -47,7 +105,10 @@ const home = createStoreModule(namespace, typesArray, function (types) {
                     if (data.code === 200) {
                         commit(types.SET_SUCCESS, {
                             target,
-                            data: data.playlist.tracks || []
+                            data: {
+                                data: data.playlist.tracks || [],
+                                loaded: true
+                            }
                         })
                     }
                 }).catch(error => {
@@ -59,16 +120,16 @@ const home = createStoreModule(namespace, typesArray, function (types) {
             }
         },
         mutations: {
-            [types.SET_PLAYLIST](state, payload) {
-                Vue.set(state, 'playlist', payload);
-            },
-            [types.SET_NEWSONG](state, payload) {
-                Vue.set(state, 'newsong', payload);
-            },
+            // [types.SET_PLAYLIST](state, payload) {
+            //     Vue.set(state, 'playlist', payload);
+            // },
+            // [types.SET_NEWSONG](state, payload) {
+            //     Vue.set(state, 'newsong', payload);
+            // },
             [types.CHANGE_TAB_INDEX](state, index) {
                 state.curIndex = index;
             }
         }
     }
-}, ['top']);
+}, ['top', 'playlist', 'newsong']);
 export default home;

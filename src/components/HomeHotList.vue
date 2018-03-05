@@ -20,7 +20,7 @@
         mapGetters,
         mapMutations,
         mapActions
-     } = createNamespacedHelpers(home.namespace);
+    } = createNamespacedHelpers(home.namespace);
     export default {
         name: 'home-hot-list',
         components: {
@@ -34,8 +34,10 @@
             }
         },
         computed: {
-            ...mapState(['top', 'topLoading']),
-            ...mapGetters(['slicedHotList']),
+            ...mapState({
+                topLoading: 'topLoading'
+            }),
+            ...mapGetters(['top', 'slicedHotList']),
             showHotList() {
                 return this.slicedHotList(0, this.pageSize * this.pageIndex).map((item, index) => {
                     return {
@@ -66,10 +68,7 @@
             }
         },
         mounted() {
-            //todo 增加缓存策略
-            if (!this.top.length) {
-                this.getHotList();
-            }
+            this.getHotList();
         }
     }
 </script>

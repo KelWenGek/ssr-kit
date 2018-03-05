@@ -1,4 +1,4 @@
-import Immutable from 'seamless-immutable';
+import Immutable from 'seamless-immutable';;
 const sep = '/';
 //effects with loading setting
 export const effects = {
@@ -49,7 +49,10 @@ export function completeTypes(types) {
 export function completeState(target) {
     return {
         [`${target}Loading`]: false,
-        [target]: [],
+        [target]: {
+            data: [],
+            loaded: false
+        },
         [`${target}Error`]: null
     }
 }
@@ -59,6 +62,20 @@ export function completeMutation() {
     const mutations = {};
     effects.types.forEach(type => {
         mutations[`SET_${type.toUpperCase()}`] = effects[`on${type}`]()
+    });
+    return mutations;
+}
+
+export function completeMutationWithTarget(targets) {
+    const mutations = {};
+    targets.forEach(target => {
+        effects.types.forEach(type => {
+            const effectHandler = effects[`on${type}`]();
+            mutations[`SET_${target.toUpperCase()}_${type.toUpperCase()}`] = function (state, payload) {
+                payload = Object.assign({}, { target }, payload || {});
+                effectHandler.call(this, state, payload);
+            }
+        });
     });
     return mutations;
 }
@@ -100,6 +117,10 @@ export function createStoreModule(namespace, typesArray, definition, targestNeed
         res.state = targestNeedLoading.reduce((state, target) => {
             return Object.assign({}, state, completeState(target))
         }, res.state);
+        res.getters = targestNeedLoading.reduce((getters, target) => {
+            return Object.assign({}, getters, { [target]: state => state[target].data });
+        }, res.getters);
+        res.mutations = Object.assign({}, res.mutations, completeMutationWithTarget(targestNeedLoading));
     }
     res.mutations = Object.assign({}, res.mutations, completeMutation())
     return {

@@ -15,11 +15,12 @@
 <script>
     import { createNamespacedHelpers } from 'vuex';
     import search from '@/store/modules/search';
-    const { mapState, mapActions } = createNamespacedHelpers(search.namespace);
+    const { mapState, mapGetters, mapActions } = createNamespacedHelpers(search.namespace);
     export default {
         name: 'search-suggest',
         computed: {
-            ...mapState(['keyword', 'result', 'suggestionLoading', 'suggestion']),
+            ...mapState(['keyword', 'suggestionLoading']),
+            ...mapGetters(['result', 'suggestion']),
             show() {
                 return this.keyword.length > 0 && !this.result.length;
             },

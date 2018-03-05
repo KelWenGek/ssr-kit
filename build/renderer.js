@@ -136,7 +136,6 @@ class WebpackDevSSR {
             try {
                 let { error, html } = await this.renderRoute(ctx);
                 if (error) {
-                    console.error(error);
                     return ctx.status = 500;
                 } else {
                     let etag = generateEtag(html);
@@ -149,7 +148,8 @@ class WebpackDevSSR {
                 return html;
             } catch (err) {
                 console.error(err);
-                return ctx.status = 500;
+                // return ctx.status = 500;
+                return ctx.body = JSON.stringify(err);
             }
         });
     }

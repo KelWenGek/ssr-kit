@@ -16,21 +16,28 @@ const search = createStoreModule('search', [
             keyword: ''
         },
         getters: {
-            slicedResult(state) {
-                return (start, end) => state.result.slice(start, end);
+            slicedResult(state, getters) {
+                return (start, end) => getters.result.slice(start, end);
             }
         },
         mutations: {
             [types.SET_KEYWORD](state, keyword) {
                 state.keyword = keyword;
-            },
-            [types.SET_RESULT](state, payload) {
-                state.result = payload;
+                state.result = {
+                    data: []
+                };
             }
+            // ,
+            // [types.SET_RESULT](state, payload) {
+            //     state.result = payload;
+            // }
         },
         actions: {
-            async [types.GET_HOT]({ commit }) {
+            async [types.GET_HOT]({ commit, state }) {
                 let target = 'hots';
+                if (state[target].loaded) {
+                    return await Promise.resolve();
+                }
                 commit(types.SET_LOADING, {
                     target
                 });
@@ -40,7 +47,10 @@ const search = createStoreModule('search', [
                     if (data.code === 200) {
                         commit(types.SET_SUCCESS, {
                             target,
-                            data: data.result.hots || []
+                            data: {
+                                data: data.result.hots || [],
+                                loaded: true
+                            }
                         });
                     }
                 }).catch(error => {
@@ -53,7 +63,9 @@ const search = createStoreModule('search', [
             [types.GET_SUGGEST]: debounce(async function ({ commit, state }, keyword) {
                 let target = 'suggestion';
                 this._withCommit(() => {
-                    state.result = [];
+                    state.result = {
+                        data: []
+                    };
                 });
                 commit(types.SET_LOADING, {
                     target
@@ -67,7 +79,9 @@ const search = createStoreModule('search', [
                     if (data.code === 200) {
                         commit(types.SET_SUCCESS, {
                             target,
-                            data: data.result.songs || []
+                            data: {
+                                data: data.result.songs || []
+                            }
                         });
                     }
                 }).catch(error => {
@@ -91,7 +105,10 @@ const search = createStoreModule('search', [
                     if (data.code === 200) {
                         commit(types.SET_SUCCESS, {
                             target,
-                            data: data.result.songs || []
+                            data: {
+                                data: data.result.songs || [],
+                                loaded: true
+                            }
                         });
                     }
                 }).catch(error => {

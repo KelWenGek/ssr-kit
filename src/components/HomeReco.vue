@@ -32,6 +32,8 @@
                     <song-item v-for="song in newsong" :key="song.id" :song="song" />
                 </div>
             </div>
+            <div>
+            </div>
         </div>
     </div>
 </template>
@@ -44,11 +46,18 @@
         components: {
             SongItem
         },
+        data() {
+            return {
+                testProperty: {}
+            }
+        },
         computed: {
             ...mapState(home.namespace, {
-                playlist: 'playlist',
+                playlist(state) {
+                    return state.playlist.data;
+                },
                 newsong(state) {
-                    return state.newsong.map((item, index) => {
+                    return state.newsong.data.map((item, index) => {
                         return item.song;
                     })
                 }

@@ -31,10 +31,8 @@
             },
             HomeNav
         },
-        asyncData({ store, route }) {
-            return new Promise((resolve, reject) => {
-                store.dispatch(home.namespacedTypes.GET_RECOMMEND).then(resolve).catch(reject)
-            });
+        async asyncData({ store, route }) {
+            await store.dispatch(home.namespacedTypes.GET_RECOMMEND);
         }
     }
 </script>

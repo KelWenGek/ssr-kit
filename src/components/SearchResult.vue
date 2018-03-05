@@ -28,8 +28,8 @@
             }
         },
         computed: {
-            ...mapState(['result', 'resultLoading']),
-            ...mapGetters(['slicedResult']),
+            ...mapState(['resultLoading']),
+            ...mapGetters(['slicedResult', 'result']),
             showResult() {
                 return this.slicedResult(0, this.pageSize * this.pageIndex).map((item, index) => {
                     let { id, name, artists, album, alias } = item;
