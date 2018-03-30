@@ -129,7 +129,7 @@ class WebpackDevSSR {
                 maxAge: '1y'
             }));
         }
-        //Statci file served 
+        //Static file served 
         this.app.use(serveStatic(resolve(this.options.srcDir, 'static')))
         //Finally attach the route render middleware
         this.app.use(async (ctx) => {

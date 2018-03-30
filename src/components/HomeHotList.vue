@@ -35,9 +35,13 @@
         },
         computed: {
             ...mapState({
+                topData(state) {
+                    return state.top.data
+                },
                 topLoading: 'topLoading'
             }),
-            ...mapGetters(['top', 'slicedHotList']),
+
+            ...mapGetters(['slicedHotList']),
             showHotList() {
                 return this.slicedHotList(0, this.pageSize * this.pageIndex).map((item, index) => {
                     return {
@@ -52,7 +56,7 @@
                 })
             },
             hasItem() {
-                return this.top.length > 0;
+                return this.topData.length > 0;
             },
             canCheckFull() {
                 return this.hasItem && !this.fullChecked;
@@ -63,7 +67,7 @@
                 getHotList: home.types.GET_HOT_LIST
             }),
             checkFull() {
-                this.pageIndex = Math.ceil(this.top.length / this.pageSize);
+                this.pageIndex = Math.ceil(this.topData.length / this.pageSize);
                 this.fullChecked = true;
             }
         },

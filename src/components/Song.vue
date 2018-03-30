@@ -19,7 +19,7 @@
                 </div>
             </div>
         </div>
-        <div @click="testRoutePush" style="display:block;position:relative;z-index:100">慢慢喜欢你</div>
+        <!-- <div @click="testRoutePush" style="display:block;position:relative;z-index:100">慢慢喜欢你</div> -->
     </div>
 </template>
 <script>

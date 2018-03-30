@@ -9,10 +9,10 @@ export function createStore() {
     return new Vuex.Store({
         state: {},
         modules: {
-            home: home.mod,
-            search: search.mod,
-            playlist: playlist.mod,
-            song: song.mod
+            home: home.result,
+            search: search.result,
+            playlist: playlist.result,
+            song: song.result
         }
     })
 }

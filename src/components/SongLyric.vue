@@ -16,7 +16,7 @@
                             {{line.lyric||`&nbsp;`}}
                         </span>
                         <template v-else>
-                            <span class="m-song-lrori">{{line.lyric||`&nbsp;`}}</span>
+                            <span class="m-song-lrori">{{line.lykelric||`&nbsp;`}}</span>
                             <span class="m-song-lrtra">{{line.tlyric||`&nbsp;`}}</span>
                         </template>
                     </p>

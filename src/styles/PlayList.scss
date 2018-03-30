@@ -3,7 +3,6 @@
     min-height: 100%;
 }
 
-
 .u-plhead .plhead_bg,
 .u-plhead .plhead_bg:after {
     position: absolute;
@@ -26,7 +25,7 @@
     }
     .plhead_bg:after {
         content: " ";
-        background-color: rgba(0,0,0,.25);
+        background-color: rgba(0, 0, 0, .25);
     }
     .plhead_wrap {
         display: -webkit-box;
@@ -34,7 +33,6 @@
         position: relative;
         z-index: 2;
     }
-
     .plhead_fl {
         position: relative;
         width: 114px;
@@ -47,8 +45,8 @@
         width: 1%;
         margin-left: 16px;
     }
-    
 }
+
 .pylst_header {
     .lsthd_fl {
         position: relative;
@@ -64,7 +62,7 @@
         font-size: 9px;
         text-align: center;
         line-height: 17px;
-        background-color: rgba(217,48,48,.8);
+        background-color: rgba(217, 48, 48, .8);
         border-top-right-radius: 17px;
         border-bottom-right-radius: 17px;
     }
@@ -79,9 +77,8 @@
         background-position: 0;
         background-repeat: no-repeat;
         background-size: 11px 10px;
-        text-shadow: 1px 0 0 rgba(0,0,0,.15);
+        text-shadow: 1px 0 0 rgba(0, 0, 0, .15);
     }
-
     .lsthd_title {
         padding-top: 1px;
         font-size: 17px;
@@ -91,16 +88,14 @@
         display: -webkit-box;
         -webkit-box-pack: center;
     }
-
     .lsthd_auth {
         display: block;
         position: relative;
         margin-top: 20px;
     }
-
     .lsthd_link {
         display: inline-block;
-        color: hsla(0,0%,100%,.7);
+        color: hsla(0, 0%, 100%, .7);
     }
     .lsthd_ava {
         display: inline-block;
@@ -111,7 +106,6 @@
         margin-right: 5px;
     }
 }
-
 
 .pylst_intro {
     position: relative;
@@ -133,6 +127,7 @@
     padding: 1px 8px;
     font-size: 12px;
 }
+
 .lstit_tag:after {
     border-radius: 9999px;
 }
@@ -148,6 +143,7 @@
     background-repeat: no-repeat;
     background-size: 12px auto;
 }
+
 .u-song {
     display: -webkit-box;
     display: -webkit-flex;
@@ -157,7 +153,6 @@
         display: -webkit-box;
         display: -webkit-flex;
         display: flex;
-        
     }
     .sgi_fr,
     .sgich_fl {
@@ -176,11 +171,9 @@
         font-size: 17px;
         color: #999;
     }
-
     .sgi_fr {
         position: relative;
     }
-
     .sgich_fl {
         padding: 6px 0;
         width: 0;
@@ -194,31 +187,31 @@
         align-items: center;
         padding: 0 10px;
     }
-
     .sgich_tl {
         font-size: 17px;
     }
-
     .sgich_info {
         font-size: 12px;
         color: #888;
     }
-
     .sgich_ply {
         display: inline-block;
         width: 22px;
         height: 22px;
         background-position: -24px 0;
     }
-
 }
-.u-song.z-dis, .u-song.z-dis .sgi_fl, .u-song.z-dis .sgich_info {
+
+.u-song.z-dis,
+.u-song.z-dis .sgi_fl,
+.u-song.z-dis .sgich_info {
     color: #ccc;
 }
 
 .u-songs .m-sgitem:last-child .sgfr:after {
     display: none;
 }
+
 .m-talk {
     .cmt_more {
         margin-left: 50px;
@@ -258,7 +251,7 @@
         color: #666;
         font-size: 12px;
         font-weight: 400;
-        background: rgba(0,0,0,.05);
+        background: rgba(0, 0, 0, .05);
     }
     .cmt_item {
         padding-top: 10px;
@@ -337,7 +330,8 @@
                 line-height: 22px;
                 margin-top: 5px;
             }
-            .cmt_emoji,.cmt_text {
+            .cmt_emoji,
+            .cmt_text {
                 vertical-align: middle;
             }
             .cmt_replied {
@@ -346,7 +340,6 @@
                 color: #888;
                 font-size: 14px;
                 line-height: 21px;
-
                 .cmt_replied_user {
                     vertical-align: middle;
                 }
@@ -354,7 +347,7 @@
                     margin-top: -2px;
                 }
             }
-        }     
+        }
     }
     .cmt_head {
         margin: 0 10px;
